@@ -54,40 +54,22 @@ def search_cars(search_value):
     region = request.args.get("region", None)
 
     try:
-        response = requests.get(DATABASE_API_URL)
-        response.raise_for_status()
-        all_cars = response.json()
-
-        # Lọc theo từ khóa trong subject
-        filtered = [
-            car for car in all_cars
-            if search_value.lower() in (car.get("subject") or "").lower()
-        ]
-
-        # Lọc theo region nếu có
-        if region:
-            filtered = [car for car in filtered if str(car.get("region")) == str(region)]
-
-        # Sắp xếp
-        if sort == "price-desc":
-            filtered.sort(key=lambda x: x.get("price", 0))
-        elif sort == "price-asc":
-            filtered.sort(key=lambda x: x.get("price", 0), reverse=True)
-
-        # Phân trang
-        start = (page - 1) * limit
-        end = start + limit
-        paginated = filtered[start:end]
-
-        return jsonify({
-            "data": paginated,
-            "total": len(filtered),
+        params = {
+            "search_value": search_value,
             "page": page,
             "limit": limit,
-        })
+            "sort": sort,
+        }
+        if region:
+            params["region"] = region
+
+        response = requests.get(f"{DATABASE_API_URL}/search", params=params)
+        response.raise_for_status()
+        return jsonify(response.json())
 
     except requests.RequestException as e:
         return jsonify({"error": f"Lỗi kết nối đến database-api: {str(e)}"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5004)

@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import mysql.connector
 import os
 from typing import List, Optional
 from datetime import datetime
+from fastapi.encoders import jsonable_encoder
 
 # Cấu hình kết nối MySQL từ môi trường
 db_config = {
@@ -75,6 +76,53 @@ def get_cars():
     ads = cursor.fetchall()
     conn.close()
     return ads
+
+@app.get("/cars/search")
+def search_cars(
+    search_value: str,
+    page: int = Query(1, gt=0),
+    limit: int = Query(10, gt=0),
+    sort: Optional[str] = Query(None, regex="^(price-asc|price-desc)?$"),
+    region: Optional[int] = None,
+):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM ads")
+        all_cars = cursor.fetchall()
+
+        # Lọc theo từ khóa
+        filtered = [
+            car for car in all_cars
+            if search_value.lower() in (car.get("subject") or "").lower()
+        ]
+
+        # Lọc theo region nếu có
+        if region is not None:
+            filtered = [car for car in filtered if str(car.get("region")) == str(region)]
+
+        # Sắp xếp
+        if sort == "price-desc":
+            filtered.sort(key=lambda x: x.get("price") or 0, reverse=True)
+        elif sort == "price-asc":
+            filtered.sort(key=lambda x: x.get("price") or 0)
+
+        # Phân trang
+        start = (page - 1) * limit
+        end = start + limit
+        paginated = filtered[start:end]
+
+        return {
+            "data": paginated,
+            "total": len(filtered),
+            "page": page,
+            "limit": limit,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
 
 
 # API thêm ads
