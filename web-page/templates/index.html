@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chợ Tốt</title>
+    <link rel="stylesheet" href="../static/style.css" />
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="">
+      <header class="header">
+        <div class="logo">Chợ tốt</div>
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            id="search-input"
+          />
+          <button class="search-btn"><i class="fa fa-search"></i></button>
+        </div>
+      </header>
+      <div class="body">
+        <div class="container">
+          <div class="left">
+            <div class="sidebar">
+              <h3>Lọc theo địa điểm</h3>
+              <div class="container-radio">
+                <label
+                  ><input name="region" type="radio" value="" checked /> Tất
+                  cả</label
+                >
+                <label
+                  ><input name="region" type="radio" value="3" /> Đà Nẵng</label
+                >
+                <label
+                  ><input name="region" type="radio" value="12" /> Hà Nội</label
+                >
+                <label
+                  ><input name="region" type="radio" value="13" /> Hồ Chí
+                  Minh</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="right">
+            <div class="selector">
+              <span>Sắp xếp theo:</span>
+              <select name="sort" id="sort">
+                <option value="">Đề cử</option>
+                <option value="price-desc">Giá thấp -> Cao</option>
+                <option value="price-asc">Giá cao -> Thấp</option>
+              </select>
+            </div>
+            <div class="card-container" id="cards-container">
+              <!-- Cards will be inserted here using JavaScript -->
+            </div>
+          </div>
+        </div>
+        <div id="pagination" class="pagination">
+          <button id="prev-btn">Trước</button>
+          <div id="page-buttons"></div>
+          <button id="next-btn">Sau</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentPage = 1;
+      const limit = 20;
+      let totalItems = 0;
+
+      function getSelectedRegion() {
+        const selected = document.querySelector('input[name="region"]:checked');
+        return selected ? selected.value : "";
+      }
+
+      function createCard(data) {
+        const card = document.createElement("div");
+        card.className = "card";
+        const mileage = data.mileage_v2 ?? 0;
+        card.innerHTML = `
+      <img src="${data.image}" alt="${data.subject}">
+      <h3>${data.subject}</h3>
+      <span><p class="quantity">Mileage: ${mileage} km</p></span>
+      <div class="price">${data.price} VNĐ</div>
+    `;
+        return card;
+      }
+
+      function loadProducts(page = 1) {
+        const sort = document.getElementById("sort").value;
+        const region = getSelectedRegion();
+        const search = document.getElementById("search-input").value.trim();
+
+        const params = new URLSearchParams({
+          page: page,
+          limit: limit,
+          ...(sort && { sort }),
+          ...(region && { region }),
+        });
+
+        // Nếu có từ khóa, gọi /cars/<search_value>, không thì gọi /cars
+        const apiEndpoint = search
+          ? `/cars/${encodeURIComponent(search)}`
+          : `/cars`;
+
+        fetch(`${apiEndpoint}?${params.toString()}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const cardsContainer = document.getElementById("cards-container");
+            cardsContainer.innerHTML = "";
+            data.data.forEach((cardData) => {
+              const card = createCard(cardData);
+              cardsContainer.appendChild(card);
+            });
+
+            totalItems = data.total;
+            currentPage = page;
+            updatePaginationButtons();
+          })
+          .catch((error) => console.error("Error loading products:", error));
+      }
+
+      document.querySelector(".search-btn").addEventListener("click", () => {
+        loadProducts(1);
+      });
+
+      document
+        .getElementById("search-input")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            loadProducts(1);
+          }
+        });
+
+      function updatePaginationButtons() {
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const pageButtons = document.getElementById("page-buttons");
+
+        const totalPages = Math.ceil(totalItems / limit);
+        pageButtons.innerHTML = "";
+
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+
+        const createBtn = (page) => {
+          const btn = document.createElement("button");
+          btn.innerText = page;
+          btn.className = "page-number-btn";
+          if (page === currentPage) btn.classList.add("active");
+          btn.addEventListener("click", () => {
+            if (page !== currentPage) loadProducts(page);
+          });
+          pageButtons.appendChild(btn);
+        };
+
+        const createDots = () => {
+          const dots = document.createElement("span");
+          dots.innerText = "...";
+          dots.className = "dots";
+          pageButtons.appendChild(dots);
+        };
+
+        if (totalPages <= 7) {
+          for (let i = 1; i <= totalPages; i++) createBtn(i);
+        } else {
+          if (currentPage <= 4) {
+            for (let i = 1; i <= 5; i++) createBtn(i);
+            createDots();
+            createBtn(totalPages);
+          } else if (currentPage >= totalPages - 3) {
+            createBtn(1);
+            createDots();
+            for (let i = totalPages - 4; i <= totalPages; i++) createBtn(i);
+          } else {
+            createBtn(1);
+            createDots();
+            for (let i = currentPage - 1; i <= currentPage + 1; i++)
+              createBtn(i);
+            createDots();
+            createBtn(totalPages);
+          }
+        }
+      }
+
+      document.getElementById("prev-btn").addEventListener("click", () => {
+        if (currentPage > 1) loadProducts(currentPage - 1);
+      });
+
+      document.getElementById("next-btn").addEventListener("click", () => {
+        const totalPages = Math.ceil(totalItems / limit);
+        if (currentPage < totalPages) loadProducts(currentPage + 1);
+      });
+
+      document.getElementById("sort").addEventListener("change", () => {
+        loadProducts(1);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadProducts();
+
+        // Listen for region radio changes
+        document.querySelectorAll('input[name="region"]').forEach((radio) => {
+          radio.addEventListener("change", () => {
+            loadProducts(1);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,327 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+}
+.body {
+  background-color: #f0f0f0;
+}
+.container {
+  margin: 0px 100px;
+  padding: 20px 0;
+  display: flex;
+  gap: 12px;
+}
+/* ------------Header------------------ */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 100px;
+  background-color: #ffba00;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  height: 50px;
+  width: 250px;
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.search-bar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  padding: 12px 8px;
+  width: 100%;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.search-btn {
+  background-color: #fff;
+  border: none;
+  color: #000;
+  padding: 12px 16px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  cursor: pointer;
+}
+.search-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.header-icons {
+  color: #fff;
+  display: flex;
+  width: 200px;
+  align-items: center;
+}
+.login-btn {
+  font-size: 16px;
+}
+
+/* ----------------sidebar left filt---------------- */
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.checkbox-group {
+  margin-bottom: 10px;
+}
+
+.checkbox-group input {
+  margin-right: 8px;
+}
+
+.checkbox-group label {
+  font-size: 14px;
+  color: #666;
+}
+
+/* ------right----------- */
+.right {
+  display: block;
+}
+.selector {
+  padding: 10px 0;
+}
+.selector select {
+  padding: 4px 6px;
+}
+
+/* --------------card---------------- */
+.cart-icon {
+  font-size: 24px;
+  color: #333;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.login-btn {
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* tạo 5 cột bằng nhau */
+  grid-gap: 10px; /* khoảng cách giữa các card */
+}
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card img {
+  width: 190px;
+  height: 200px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  object-fit: cover;
+}
+
+.card h3 {
+  word-break: break-all;
+  font-size: 1em;
+  font-weight: 500;
+  color: #333;
+  margin: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.2em;
+  height: 2.4em;
+}
+.card span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card p {
+  color: #666;
+  margin: 8px;
+  font-size: 0.8em;
+}
+.card .price {
+  color: #e44d26;
+  font-size: 1.2em;
+  font-weight: 700;
+  margin: 8px;
+}
+.card .location {
+  font-size: 0.9em;
+  color: #777;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.pagination button,
+.page-number-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 14px;
+}
+.pagination button:hover,
+.page-number-btn:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.page-number-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+.dots {
+  padding: 8px 12px;
+  color: #666;
+  font-weight: bold;
+}
+@media (max-width: 768px) {
+  .card {
+    width: calc(50% - 16px);
+  }
+}
+@media (max-width: 480px) {
+  .card {
+    width: 100%;
+  }
+}
+
+/* From Uiverse.io by Pradeepsaranbishnoi */
+.container-radio {
+  --s: 1em; /* control the size */
+  --g: 10px; /* the gap */
+  --c: #009688; /* the active color */
+
+  display: grid;
+  grid-auto-rows: 1fr;
+  gap: var(--g);
+  position: relative;
+}
+.container-radio:before {
+  content: "";
+  position: absolute;
+  height: calc(var(--s) / 2);
+  left: calc(var(--s) / 4 + var(--_x, 0px));
+  top: calc(var(--s) / 4);
+  background: var(--c);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  transition: 0.4s, left cubic-bezier(0.1, -2000, 0.7, -2000) 0.4s;
+}
+.container-radio label {
+  display: inline-flex;
+  line-height: var(--s);
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.container-radio input {
+  height: var(--s);
+  aspect-ratio: 1;
+  border: calc(var(--s) / 8) solid var(--_c, #939393);
+  border-radius: 50%;
+  outline-offset: calc(var(--s) / 10);
+  padding: calc(var(--s) / 8);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  font-size: inherit;
+  margin: 0;
+  transition: 0.3s;
+}
+.container-radio input:checked {
+  --_c: var(--c);
+}
+.container-radio:not(:has(input:checked)):before {
+  --_i: -1;
+  opacity: 0;
+}
+.container-radio:has(input:checked):before {
+  opacity: 1;
+  transform: translateY(calc(var(--_i) * (var(--s) + var(--g))));
+}
+.container-radio:has(label:nth-child(1) input:checked):before {
+  --_i: 0;
+  --_x: 0.02px;
+}
+.container-radio:has(label:nth-child(2) input:checked):before {
+  --_i: 1;
+  --_x: 0.04px;
+}
+.container-radio:has(label:nth-child(3) input:checked):before {
+  --_i: 2;
+  --_x: 0.06px;
+}
+.container-radio:has(label:nth-child(4) input:checked):before {
+  --_i: 3;
+  --_x: 0.08px;
+}
+.container-radio:has(label:nth-child(5) input:checked):before {
+  --_i: 4;
+  --_x: 0.1px;
+}
+@media print {
+  input[type="radio"] {
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
+    background: none;
+  }
+}
+@supports not selector(:has(*)) {
+  .container-radio:before {
+    display: none;
+  }
+  .container-radio input:checked {
+    --_c: var(--c);
+    background: var(--c) content-box;
+  }
+}

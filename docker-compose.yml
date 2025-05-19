@@ -1,0 +1,87 @@
+services:
+  db_mysql:
+    container_name: db
+    image: mysql:8.0
+    ports:
+      - 3309:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./init_db:/docker-entrypoint-initdb.d/:ro
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - private-network
+
+  database-api:
+    build:
+      context: ./database-api
+    container_name: database_api
+    environment:
+      MYSQL_HOST: db_mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: oto_ads
+    ports:
+      - "5003:5003"
+    depends_on:
+      - db_mysql
+    networks:
+      - private-network
+
+  data-crawling:
+    build:
+      context: ./data_crawling
+    container_name: data-crawling
+    volumes:
+      - ./data_crawling:/app
+      - ./landing-zone:/app/landing-zone
+    ports:
+      - "5001:5001"
+    networks:
+      - private-network
+
+  data-ingestion:
+    build:
+      context: ./data_ingestion
+    container_name: data-ingestion
+    volumes:
+      - ./landing-zone:/app/landing-zone
+    ports:
+      - "5002:5002"
+    depends_on:
+      - db_mysql
+      - database-api
+      - data-crawling
+    networks:
+      - private-network
+
+  web-page:
+    build: ./web-page
+    container_name: web-page
+    ports:
+      - "5004:5004"
+    depends_on:
+      - database-api
+    volumes:
+      - ./web-page:/app
+    networks:
+      - private-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - database-api
+      - data-ingestion
+      - data-crawling
+      - web-page
+    networks:
+      - private-network
+
+networks:
+  private-network:
+    driver: bridge
