@@ -59,9 +59,9 @@ CRAWLING-DATA/
 
 ## ⚙️ Công nghệ sử dụng
 
-- **Python 3.10
-- **BeautifulSoup4, Requests** – Crawl dữ liệu
-- **Flask** – Giao diện web
+- **Python 3.10**
+- **Requests** – Crawl dữ liệu
+- **FlaskApi** – Giao diện web
 - **MySQL** – Cơ sở dữ liệu lưu trữ
 - **Docker, Docker Compose** – Triển khai
 
@@ -90,7 +90,7 @@ Docker Compose sẽ tự động:
 ## 🌐 Truy cập
 
 - Web hiển thị dữ liệu: [http://localhost:5000](http://localhost:5000)
-- MySQL container: `localhost:3306` (user: `root`, password: `123456`)
+- MySQL container: `localhost:3306` (user: `root`, password: ``)
 
 ---
 
