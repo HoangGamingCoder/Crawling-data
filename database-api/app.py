@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Body, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 import mysql.connector
 import os
 from typing import List, Optional
@@ -52,7 +53,7 @@ class Car(BaseModel):
     carbrand: Optional[int] = None
     carmodel: Optional[int] = None
     carorigin: Optional[int] = None
-    carseats: Optional[int] = None  # <-- sửa ở đây
+    carseats: Optional[int] = None  
     fuel: Optional[int] = None
     gearbox: Optional[int] = None
     mfdate: Optional[int] = None
@@ -120,7 +121,7 @@ def search_cars(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         conn.close()
 
@@ -211,7 +212,7 @@ def add_cars(cars: List[Car] = Body(...)):
 
     except Exception as e:
         conn.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         conn.close()
    
@@ -229,7 +230,7 @@ def update_car(id: int, car: Car):
         conn.commit()
         return {"message": "Car ad updated successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         conn.close()
 
@@ -245,6 +246,6 @@ def delete_car(id: int):
         conn.commit()
         return {"message": "Car ad deleted successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     finally:
         conn.close()
