@@ -90,7 +90,7 @@ Docker Compose sẽ tự động:
 | **Dịch vụ**        | **URL kiểm tra**           | **Chức năng chính**                                                                 |
 |--------------------|-----------------------------|--------------------------------------------------------------------------------------|
 | **API Gateway**    | http://localhost/           | NGINX Reverse Proxy – chuyển tiếp yêu cầu đến các dịch vụ tương ứng.               |
-| **Web Frontend**   | http://localhost/           | Giao diện người dùng để hiển thị danh sách tin đăng (sử dụng qua Gateway).         |
+| **Web Frontend**   | http://localhost/5004           | Giao diện người dùng để hiển thị danh sách tin đăng (sử dụng qua Gateway).         |
 | **Crawling API**   | http://localhost:5001       | Thu thập dữ liệu từ Chợ Tốt và lưu vào thư mục `landing-zone` ở định dạng JSON.    |
 | **Ingestion API**  | http://localhost:5002       | Đọc dữ liệu JSON từ `landing-zone` và gọi API để lưu vào cơ sở dữ liệu.            |
 | **Database API**   | http://localhost:5003       | Cung cấp các RESTful API để đọc, ghi, truy vấn dữ liệu từ MySQL database.          |
