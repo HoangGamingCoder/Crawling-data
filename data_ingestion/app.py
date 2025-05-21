@@ -14,7 +14,7 @@ HASH_FILE = os.path.join(LANDING_ZONE, "last_hash.txt")
 DATABASE_API_URL = "http://database-api:5003/cars"
 CHECK_INTERVAL = 10  # giây
 
-# ✅ Tính hash để kiểm tra thay đổi
+#  Tính hash để kiểm tra thay đổi
 def calculate_file_hash(filepath: str) -> str:
     hasher = hashlib.sha256()
     with open(filepath, 'rb') as f:
@@ -22,7 +22,7 @@ def calculate_file_hash(filepath: str) -> str:
         hasher.update(buf)
     return hasher.hexdigest()
 
-# ✅ Kiểm tra file có thay đổi không
+#  Kiểm tra file có thay đổi không
 def has_file_changed(filepath: str, hashfile: str) -> bool:
     current_hash = calculate_file_hash(filepath)
     if os.path.exists(hashfile):
@@ -34,7 +34,7 @@ def has_file_changed(filepath: str, hashfile: str) -> bool:
         f.write(current_hash)
     return True  # Có thay đổi
 
-# ✅ Tách riêng hàm ingest logic
+#  Tách riêng hàm ingest logic
 async def ingest_data_from_file():
     if not os.path.exists(DATA_FILE):
         raise FileNotFoundError("No data file found to ingest.")
@@ -74,7 +74,7 @@ async def ingest_data_from_file():
         "inserted": len(ads)
     }
 
-# ✅ Background task tự động ingest nếu file thay đổi
+#  Background task tự động ingest nếu file thay đổi
 async def auto_ingest_loop():
     while True:
         try:
@@ -88,17 +88,17 @@ async def auto_ingest_loop():
             print(f"[Auto Ingest Error] {e}",flush=True)
         await asyncio.sleep(CHECK_INTERVAL)
 
-# ✅ Khởi chạy background task khi app start
+#  Khởi chạy background task khi app start
 @app.on_event("startup")
 async def start_background_tasks():
     asyncio.create_task(auto_ingest_loop())
 
-# ✅ Route kiểm tra hoạt động
+#  Route kiểm tra hoạt động
 @app.get("/")
 def root():
     return {"message": "Data Ingestion Service is running"}
 
-# ✅ Route ingest thủ công (gọi tay)
+#  Route ingest thủ công (gọi tay)
 @app.get("/ingest")
 async def ingest_data():
     try:
